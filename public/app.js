@@ -25,6 +25,12 @@ learnjs.problemView = function(data){
       learnjs.flashElement(resultFlash, learnjs.buildCorrectFlash(problemNumber));
     } else {
       learnjs.flashElement(resultFlash, 'Incorrect!');
+      var skipButton = learnjs.template('skip-btn');
+      skipButton.find('a').attr('href', learnjs.nextProblemLink(problemNumber));
+      $('.nav-list').append(skipButton);
+      view.bind('removingView', function(){
+        skipButton.remove();
+      });
     }
     return false;
   }
@@ -48,6 +54,7 @@ learnjs.showView = function(hash){
   var hashParts = hash.split('-');
   var viewFn = routes[hashParts[0]];
   if (viewFn) {
+    learnjs.triggerEvent('removingView', []);
     $('.view-container').empty().append(viewFn(hashParts[1]));
   }
 };
@@ -83,6 +90,10 @@ learnjs.flashElement = function(elem, content){
 
 learnjs.template = function(name) {
   return $('.templates .' + name).clone();
+}
+
+learnjs.triggerEvent = function(name, args) {
+  $('.view-container>*').trigger(name, args);
 }
 
 learnjs.applyObject = function(obj, elem){
