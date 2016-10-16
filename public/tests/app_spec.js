@@ -1,11 +1,11 @@
 describe('LearnJS', function(){
-  it('can show a problem view', function(){
-    learnjs.showView('#problem-1');
-    expect($('.view-container .problem-view').length).toEqual(1);
-  });
   it('shows the landing page view when there is no hash', function(){
     learnjs.showView('');
     expect($('.view-container .landing-view').length).toEqual(1);
+  });
+  it('can show a problem view', function(){
+    learnjs.showView('#problem-1');
+    expect($('.view-container .problem-view').length).toEqual(1);
   });
   it('passes the hash view parameter to the view function', function(){
     spyOn(learnjs, 'problemView');
@@ -27,18 +27,33 @@ describe('LearnJS', function(){
   describe('problem view', function(){
     var problem_1, view;
     beforeEach(function(){
-      problem_1 = {description: 'a description', code: 'some code'};
+      problem_1 = {description: 'What is thruth?', code: 'function problem() { return __; }'};
       learnjs.problems = [problem_1];
       view = learnjs.problemView('1');
     });
+    function giveAnswer(answer){
+      view.find('.answer').val(answer);
+      view.find('.check-btn').click();
+    }
+    function element(selector){
+      return view.find(selector).text();
+    }
     it('has a title that includes the problem number', function(){
-      expect(view.find('.title').text()).toEqual('Problem #1')
+      expect(element('.title')).toEqual('Problem #1')
     });
     it('renders the problem description', function(){
-      expect(view.find('.description').text()).toEqual(problem_1.description)
+      expect(element('.description')).toEqual(problem_1.description)
     });
     it('renders the problem code', function(){
-      expect(view.find('.code').text()).toEqual(problem_1.code)
+      expect(element('.code')).toEqual(problem_1.code)
+    });
+    it('can check a correct answer by hitting a button', function(){
+      giveAnswer('true');
+      expect(element('.result')).toEqual('Correct!')
+    });
+    it('can check an incorrect answer', function(){
+      giveAnswer('false');
+      expect(element('.result')).toEqual('Incorrect!')
     });
   });
 });
