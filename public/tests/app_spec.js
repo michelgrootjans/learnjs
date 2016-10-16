@@ -25,9 +25,20 @@ describe('LearnJS', function(){
   });
 
   describe('problem view', function(){
+    var problem_1, view;
+    beforeEach(function(){
+      problem_1 = {description: 'a description', code: 'some code'};
+      learnjs.problems = [problem_1];
+      view = learnjs.problemView('1');
+    });
     it('has a title that includes the problem number', function(){
-      var view = learnjs.problemView('1');
       expect(view.find('.title').text()).toEqual('Problem #1')
+    });
+    it('renders the problem description', function(){
+      expect(view.find('.description').text()).toEqual(problem_1.description)
+    });
+    it('renders the problem code', function(){
+      expect(view.find('.code').text()).toEqual(problem_1.code)
     });
   });
 });
