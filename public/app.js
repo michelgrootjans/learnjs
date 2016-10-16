@@ -55,14 +55,23 @@ learnjs.showView = function(hash){
 learnjs.buildCorrectFlash = function(problemNumber) {
   var correctFlash = learnjs.template('correct-flash');
   var link = correctFlash.find('a');
-  if(learnjs.problems.length > problemNumber) {
-    link.attr('href', '#problem-' + (problemNumber+1));
-  }
-  else {
-    link.attr('href', '');
+  link.attr('href', learnjs.nextProblemLink(problemNumber));
+  if(!learnjs.nextProblemExists(problemNumber)) {
     link.text("You're Finished!")
   }
   return correctFlash;
+}
+
+learnjs.nextProblemLink = function(problemNumber) {
+  if(learnjs.nextProblemExists(problemNumber)) {
+    return '#problem-' + (problemNumber+1);
+  } else {
+    return '';
+  }
+}
+
+learnjs.nextProblemExists = function(problemNumber){
+  return learnjs.problems.length > problemNumber;
 }
 
 learnjs.flashElement = function(elem, content){
