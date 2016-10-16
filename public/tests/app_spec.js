@@ -49,11 +49,29 @@ describe('LearnJS', function(){
     });
     it('can check a correct answer by hitting a button', function(){
       giveAnswer('true');
-      expect(element('.result')).toEqual('Correct!')
+      expect(element('.result span')).toEqual('Correct!')
     });
     it('can check an incorrect answer', function(){
       giveAnswer('false');
       expect(element('.result')).toEqual('Incorrect!')
+    });
+  });
+
+  describe('buildCorrectFlash', function(){
+    var problem_1;
+    beforeEach(function(){
+      problem_1 = {description: 'What is thruth?', code: 'function problem() { return __; }'};
+      learnjs.problems = [problem_1];
+    });
+    it('prepares a link to the next problem', function(){
+      var link = learnjs.buildCorrectFlash(0).find('a');
+      expect(link.attr('href')).toEqual('#problem-1')
+      expect(link.text()).toEqual("Next Problem");
+    });
+    it('links to the landing page when the last problem is done', function(){
+      var link = learnjs.buildCorrectFlash(1).find('a');
+      expect(link.attr('href')).toEqual('')
+      expect(link.text()).toEqual("You're Finished!");
     });
   });
 });
