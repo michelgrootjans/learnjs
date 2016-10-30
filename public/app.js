@@ -1,5 +1,29 @@
 'use strict';
-var learnjs = {};
+var learnjs = {
+  poolId: 'us-east-1:cde32006-723f-43f9-bfd9-e54bd5f1b055'
+};
+
+learnjs.awsRefresh = function() {
+  var deferred = new $.Deferred();
+  AWS.config.credentials.refresh(function(err) {
+    if(err) {
+      deferred.reject(err);
+    } else {
+      deferred.resolve(AWS.config.credentials.identityId);
+    }
+  });
+  return deferred.promise();
+}
+
+learnjs.identity = new $.Deferred();
+
+learnjs.awsRefresh().then(function(id) {
+  learnjs.identity.resolve({
+    id: id,
+    email: googleUser.getBasicProfile().getEmail(),
+    refresh: refresh
+  });
+});
 
 learnjs.appOnReady = function(){
   window.onhashchange = function(){

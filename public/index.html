@@ -3,12 +3,14 @@
   <head>
     <meta charset='utf-8'>
     <title>Learn JS!</title>
-    <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Raleway:400,300,600' type='text/css'>
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css'>
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css'>
     <script src='https://code.jquery.com/jquery-2.1.4.min.js'></script>
-    <script src='/vendor.js'></script>
-    <script src='/app.js'></script>
+    <script src='https://apis.google.com/js/platform.js' async defer></script>
+    <meta name="google-signin-client_id" content="899336155594-4po6gvb063e9jfknom6r2sohv51aqnm3.apps.googleusercontent.com">
+    <script src='vendor.js'></script>
+    <script src='app.js'></script>
     <style type="text/css" media="all">
       body { margin-top: 30px; }
       .templates { display: none; }
@@ -37,6 +39,10 @@
         background: #666;
       }
       .nav-container a { color: white; }
+      .navbar-padding {
+        padding-top: 7px;
+        display: inline-block;
+      }
     </style>
   </head>
   <body>
@@ -46,6 +52,11 @@
           <li><a class="text-lg" href="#">LearnJS</a></li>
           <li><a href="#problem-1">Start</a></li>
         </ul>
+        <div class="four columns">
+          <span class="navbar-padding u-pull-right">
+            <span class="g-signin2" data-onsuccess="googleSignIn"></span>
+          </span>
+        </div>
       </div>
       <div class='view-container container'>
       </div>
@@ -57,7 +68,7 @@
               <a href="#problem-1" class="button button-primary">Start Now!</a>
             </div>
             <div class="one-half column">
-              <img src="/images/HeroImage.jpg" alt="Puzzle" />
+              <img src="images/HeroImage.jpg" alt="Puzzle" />
             </div>
           </div>
         </div>
@@ -81,6 +92,29 @@
     </div>
     <script type="text/javascript">
       $(window).ready(learnjs.appOnReady);
+      function googleSignIn() {
+        var id_token = googleUser.getAuthResponse().id_token;
+        AWS.config.update({
+          region: 'us-east-1',
+          credentials: new AWS.CognitoIdentityCredentials({
+            IdentityPoolId: learnjs.poolId,
+            Logins: {
+              'accounts.google.com': id_token
+            }
+          })
+        });
+
+        function refresh() {
+          return gapi.auth2.getAuthInstance().signIn({
+            prompt: 'login'
+          }).then(function(userUpdate) {
+            var creds = AWS.config.credentials;
+            var newToken = userUpdate.getAuthResponse().id_token;
+            creds.params.Logins['accounts.google.com'] = newToken;
+            return learnjs.awsRefresh();
+          });
+        }
+      }
     </script>
   </body>
 </html>
