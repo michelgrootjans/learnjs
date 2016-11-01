@@ -17,14 +17,6 @@ learnjs.awsRefresh = function() {
 
 learnjs.identity = new $.Deferred();
 
-learnjs.awsRefresh().then(function(id) {
-  learnjs.identity.resolve({
-    id: id,
-    email: googleUser.getBasicProfile().getEmail(),
-    refresh: refresh
-  });
-});
-
 learnjs.appOnReady = function(){
   window.onhashchange = function(){
     learnjs.showView(window.location.hash);
