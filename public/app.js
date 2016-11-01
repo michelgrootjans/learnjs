@@ -51,14 +51,6 @@ learnjs.problemView = function(data){
     return false;
   }
 
-  learnjs.profileView = function() {
-    var view = learnjs.template('profile-view');
-    learnjs.identity.done(function(identity){
-      view.find('.email').text(identity.email);
-    });
-    return view;
-  }
-
   function checkAnswer() {
     var answer = view.find('.answer').val();
     var test = problemData.code.replace('__', answer) + '; problem();';
@@ -70,6 +62,14 @@ learnjs.problemView = function(data){
   learnjs.applyObject(problemData, view)
   return view;
 };
+
+learnjs.profileView = function() {
+  var view = learnjs.template('profile-view');
+  learnjs.identity.done(function(identity){
+    view.find('.email').text(identity.email);
+  });
+  return view;
+}
 
 learnjs.buildCorrectFlash = function(problemNumber) {
   var correctFlash = learnjs.template('correct-flash');
